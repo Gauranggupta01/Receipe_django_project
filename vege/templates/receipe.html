@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Background with a dark gradient */
+        body {
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Centered form with glass effect */
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #f8f9fa;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        /* Styling inputs */
+        .form-control {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .form-control::placeholder {
+            color: #ddd;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: none;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Submit button */
+        .btn-success {
+            width: 100%;
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #1f7a32, #18602a);
+            transform: scale(1.05);
+        }
+
+        /* Centering form */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        img {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+        <a class="navbar-brand" href="#">Welcome {{ request.user.username }}</a>
+        <div class="ms-auto">
+            <a href="/logout/" class="btn btn-outline-light">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="form-container">
+            <h2>Add Recipe</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %} 
+                <div class="mb-3">
+                    <label class="form-label">Recipe Name</label>
+                    <input name="receipe_name" type="text" required class="form-control" placeholder="Enter recipe name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Recipe Description</label>
+                    <textarea class="form-control" name="receipe_description" rows="3" placeholder="Enter recipe description"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Recipe Image</label>
+                    <input name="receipe_image" type="file" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success">Add Recipe</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Recipe Name</th>
+                    <th scope="col">Recipe Description</th>
+                    <th scope="col">Recipe Image</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipe in receipes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ receipe.reciepe_name }}</td>
+                    <td>{{ receipe.reciepe_description }}</td>
+                    <td>
+                        <img src="/media/{{ receipe.reciepe_image }}" style="height: 100px;">
+                    </td>
+                    <td>
+                        <a href="/delete-receipe/{{ receipe.id }}/" class="btn btn-danger">Delete</a>
+                        <a href="/update-receipe/{{ receipe.id }}/" class="btn btn-success">Update</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
