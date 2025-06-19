@@ -114,5 +114,3 @@ def logout_page(request):
     return redirect('/login/')
 
 
-from django.db.models import Q,Sum
-
