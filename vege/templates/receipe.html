@@ -6,22 +6,38 @@
     <title>Add Recipe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Background with a dark gradient */
         body {
-            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-            color: white;
+            margin: 0;
+            padding: 0;
+            background: url('https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+            background-size: cover;
             font-family: 'Poppins', sans-serif;
+            color: white;
         }
 
-        /* Centered form with glass effect */
+        /* Gradient overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
         .form-container {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
             width: 100%;
-            max-width: 500px;
+            margin: 50px auto;
         }
 
         h2 {
@@ -35,7 +51,6 @@
             font-weight: 500;
         }
 
-        /* Styling inputs */
         .form-control {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -50,11 +65,9 @@
         .form-control:focus {
             background: rgba(255, 255, 255, 0.3);
             color: white;
-            border: none;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
         }
 
-        /* Submit button */
         .btn-success {
             width: 100%;
             background: linear-gradient(135deg, #28a745, #218838);
@@ -71,36 +84,82 @@
             transform: scale(1.05);
         }
 
-        /* Centering form */
-        .container {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Table Styling */
         table {
-            width: 100%;
-            margin-top: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            color: white;
-        }
+        margin-top: 30px;
+        background: rgba(255, 255, 255, 0.05);
+        border-collapse: collapse;
+        border-radius: 12px;
+        overflow: hidden;
+        color: white;
+        width: 100%;
+        backdrop-filter: blur(8px);
+    }
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-        }
+    th, td {
+        padding: 16px;
+        text-align: center;
+        vertical-align: middle;
+    }
 
-        th {
-            background: rgba(255, 255, 255, 0.2);
-        }
+    thead th {
+        background: rgba(255, 255, 255, 0.15);
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
 
-        img {
-            border-radius: 8px;
-        }
+    tbody tr {
+        transition: background 0.3s ease;
+    }
+
+    tbody tr:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    img {
+        border-radius: 8px;
+        height: 80px;
+        transition: transform 0.3s ease;
+    }
+
+    img:hover {
+        transform: scale(1.1);
+    }
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 4px;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  min-width: 80px;
+}
+
+.btn-update {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-update:hover {
+  background-color: #2980b9;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
+
+     nav.navbar {
+        z-index: 2;
+    }
     </style>
 </head>
 <body>
@@ -110,12 +169,12 @@
             <a href="/logout/" class="btn btn-outline-light">Logout</a>
         </div>
     </nav>
-    
+
     <div class="container">
         <div class="form-container">
             <h2>Add Recipe</h2>
             <form method="post" enctype="multipart/form-data">
-                {% csrf_token %} 
+                {% csrf_token %}
                 <div class="mb-3">
                     <label class="form-label">Recipe Name</label>
                     <input name="receipe_name" type="text" required class="form-control" placeholder="Enter recipe name">
@@ -131,36 +190,33 @@
                 <button type="submit" class="btn btn-success">Add Recipe</button>
             </form>
         </div>
-    </div>
 
-    <div class="container">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Recipe Name</th>
-                    <th scope="col">Recipe Description</th>
-                    <th scope="col">Recipe Image</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for receipe in receipes %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ receipe.reciepe_name }}</td>
-                    <td>{{ receipe.reciepe_description }}</td>
-                    <td>
-                        <img src="/media/{{ receipe.reciepe_image }}" style="height: 100px;">
-                    </td>
-                    <td>
-                        <a href="/delete-receipe/{{ receipe.id }}/" class="btn btn-danger">Delete</a>
-                        <a href="/update-receipe/{{ receipe.id }}/" class="btn btn-success">Update</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <table class="table table-hover table-bordered text-white mt-5" style="background: rgba(255, 255, 255, 0.08); border-radius: 12px; overflow: hidden;">
+    <thead>
+        <tr style="background: rgba(255, 255, 255, 0.2); font-weight: 600;">
+            <th>S.No</th>
+            <th>Recipe Name</th>
+            <th>Recipe Description</th>
+            <th>Recipe Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for receipe in receipes %}
+        <tr style="background-color: rgba(255,255,255,0.05);">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ receipe.reciepe_name }}</td>
+            <td>{{ receipe.reciepe_description }}</td>
+            <td><img src="/media/{{ receipe.reciepe_image }}" alt="Recipe Image" style="height: 80px; border-radius: 8px;"></td>
+            <td>
+                <a href="/delete-receipe/{{ receipe.id }}/" class="btn btn-sm btn-danger mb-1">Delete</a>
+                <a href="/update-receipe/{{ receipe.id }}/" class="btn btn-sm btn-success">Update</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
